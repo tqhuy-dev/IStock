@@ -10,4 +10,8 @@ router.post('/signin' , (req , res , next) => {
     userQuery.createUser(req , res);
 })
 
+router.post('/login' , (req , res , next) => {
+    userQuery.loginUser(req , res);
+})
+
 module.exports = router;

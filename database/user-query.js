@@ -53,6 +53,30 @@ const userQuery = {
                 error: error
             });            
         }
+    },
+
+    async loginUser(req , res) {
+        const queryText = 'select login_user($1 , $2 , $3 , $4)';
+        const token = sha(req.body + new Date());
+        const params = [
+            req.body.email,
+            req.body.password,
+            new Date().getTime().toString(),
+            token
+        ];
+
+        try {
+            const { rows } = await pool.query(queryText , params);
+            return res.status(200).json({
+                status_code: 200,
+                message: rows[0].login_user,
+                token: token
+            });
+        } catch (error) {
+            return res.status(400).json({
+                error: error
+            });
+        }
     }
 }
 

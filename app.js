@@ -3,12 +3,14 @@ const app = express();
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
 const cors = require('cors');
+const { Pool } = require('pg');
 
+const userController = require('./controller/user-controller');
 
 app.use(morgan('dev'))
 app.use(cors());
-app.use(bodyParser.urlencoded({ extended: false}))
-app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: false}));
+app.use(bodyParser.json());
 
 
 
@@ -23,14 +25,17 @@ app.use((req, res, next) => {
       return res.status(200).json({});
     }
     next();
-  });
+});
 
-app.get('/api/v1/users/' , (req , res , next) =>{
+
+app.get('/api/v1/' , (req , res , next) =>{
     res.status(200).json({
         message:'api is working',
         status:'success'
     })
 });
+
+app.use('/api/v1/users/' , userController);
 
 
 app.use((req , res , next) => {

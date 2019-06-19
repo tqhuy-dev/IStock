@@ -1,10 +1,8 @@
 const express = require('express');
 const router = express.Router();
-
+const stockQuery = require('../database/stock-query');
 router.post('/' , (req , res , next) => {
-    return res.status(200).json({
-        api: 'create stock'
-    })
+    stockQuery.createStock(req , res);
 })
 
 module.exports = router;

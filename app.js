@@ -6,6 +6,7 @@ const cors = require('cors');
 const { Pool } = require('pg');
 
 const userController = require('./controller/user-controller');
+const stockController = require('./controller/stock-controller');
 
 app.use(morgan('dev'))
 app.use(cors());
@@ -36,7 +37,7 @@ app.get('/api/v1/' , (req , res , next) =>{
 });
 
 app.use('/api/v1/users/' , userController);
-
+app.use('/api/v1/stock/' , stockController);
 
 app.use((req , res , next) => {
     next({

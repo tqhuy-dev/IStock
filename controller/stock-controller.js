@@ -16,6 +16,9 @@ router.get('/' , (req , res , next) => {
     stockQuery.getStock(req , res);
 })
 
-
+//delete stock
+router.delete('/:id' , (req , res , next) => {
+    stockQuery.deleteStock(req , res);
+})
 
 module.exports = router;

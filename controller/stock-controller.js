@@ -2,6 +2,10 @@ const express = require('express');
 const router = express.Router();
 const stockQuery = require('../database/stock-query');
 
+//change state stock
+router.post('/state' , (req , res , next) => {
+
+})
 //edit information of stock
 router.post('/:id' , (req , res , next) => {
     stockQuery.editStock(req , res);

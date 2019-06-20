@@ -3,6 +3,8 @@ const authentication = require('../middle-ware/authentication');
 const sha = require('sha256');
 const commonQuery = require('../shared/common-query/common-query');
 const { STOCK_STATUS } = require('../shared/constant/constant');
+const ResponseObject = require('../shared/model/response-object');
+
 const pool = new Pool({
     connectionString: process.env.connectpg
 })
@@ -47,16 +49,9 @@ const stockQuery = {
             ];
 
             const data = await pool.query(queryText , params);
-            return res.status(200).json({
-                status_code: 200,
-                message: 'query success',
-                data: data.rows
-            })
+            return res.status(200).json(new ResponseObject(200 , 'query success' , data.rows));
         } catch (error) {
-            return res.status(400).json({
-                status_code: 400 , 
-                message: error,
-            })
+            return res.status(400).json(new ResponseObject(500 , error));
         }
     },
 
@@ -72,22 +67,13 @@ const stockQuery = {
                     req.params.id
                 ];
                 await pool.query(queryText , params);
-                return res.status(200).json({
-                    status_code: 200 , 
-                    message: 'update stock success'
-                })
+                return res.status(200).json(new ResponseObject(200 , 'update success'));
             } else {
-                return res.status(203).json({
-                    status_code: 203 , 
-                    message : 'stock not fount'
-                })
+                return res.status(203).json(new ResponseObject(203 , 'stock not found'));
             }
 
         } catch (error) {
-            return res.status(500).json({
-                status_code: 500,
-                message: error
-            })
+            return res.status(500).json(new ResponseObject(500 , error));
         }
     },
 
@@ -107,29 +93,21 @@ const stockQuery = {
                     const queryText = 'UPDATE stock SET status=$2 WHERE stock.id = $1';
                     const params = [req.params.id, STOCK_STATUS.DELETE];
                     await pool.query(queryText , params);
-                    return res.status(200).json({
-                        status_code:200 , 
-                        message: 'delete success'
-                    })
+                    return res.status(200).json(new ResponseObject(200 , 'delete success'));
                 } else {
-                    return res.status(203).json({
-                        status_code: 203,
-                        message: 'you dont have permission'
-                    })
+                    return res.status(203).json(new ResponseObject(203 , 'you dont have the permission'));
                 }
                 
             } else {
-                return res.status(203).json({
-                    status_code: 203,
-                    message: 'stock item not found'
-                })
+                return res.status(203).json(new ResponseObject(203 , 'stock not found'));
             }
         } catch (error) {
-            return res.status(500).json({
-                status_code: 500,
-                message: error
-            })
+            return res.status(500).json(new ResponseObject(500 , error));
         }
+    },
+
+    async changeStateStock(req , res) {
+        
     }
 }
 

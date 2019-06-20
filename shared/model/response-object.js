@@ -1,11 +1,5 @@
-class ResponseObject {
-    status_code;
-    message;
-    data;
-
-    constructor(status_code , message , data) {
-        status_code = status_code;
-        message = message;
-        data = data
-    }
+module.exports = function(...arg) {
+    this.code = arg[0];
+    this.message = arg[1];
+    this.data = arg[2];
 }

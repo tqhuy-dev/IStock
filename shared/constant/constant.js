@@ -1,0 +1,27 @@
+const USER_STATUS = {
+    NORMAL: 1,
+    DELETE:2,
+    BLOCK:3,
+};
+
+const STOCK_STATUS = {
+    NORMAL: 1,
+    DELETE: 2,
+    BLOCK:3,
+    PRIVATE:4
+};
+
+const STOCK_ITEM_STATUS = {
+    NORMAL: 1,
+    DELETE: 2,
+    RESERVED:3,
+    SOLD: 4,
+    BLOCK: 5,
+    PRIVATE: 6
+};
+
+module.exports = {
+    USER_STATUS: USER_STATUS,
+    STOCK_STATUS: STOCK_STATUS,
+    STOCK_ITEM_STATUS: STOCK_ITEM_STATUS
+}

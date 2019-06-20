@@ -30,6 +30,32 @@ const stockQuery = {
                 error: error
             })            
         }
+    },
+
+    async getStock(req , res) {
+        await authentication.checkToken(req , res);
+        try {
+            //get email from  token 
+            const {rows} = await pool.query('select account.email from account where account.token = $1' ,
+            [req.headers.authorization]);
+            //get list stock of user by email
+            const queryText = 'select * from stock where stock.email = $1';
+            const params = [
+                rows[0].email
+            ];
+
+            const data = await pool.query(queryText , params);
+            return res.status(200).json({
+                status_code: 200,
+                message: 'query success',
+                data: data.rows
+            })
+        } catch (error) {
+            return res.status(400).json({
+                status_code: 400 , 
+                message: error,
+            })
+        }
     }
 }
 

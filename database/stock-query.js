@@ -56,6 +56,37 @@ const stockQuery = {
                 message: error,
             })
         }
+    },
+
+    async editStock(req , res) {
+        await authentication.checkToken(req , res);
+        try {
+            const {rows} = await pool.query('select count(*) from stock where stock.id = $1' , [req.params.id]);
+            if(rows[0].count > 0) {
+                const queryText = 'UPDATE stock '+ 'SET description= $1, name=$2 ' + 'WHERE stock.id = $3';
+                const params = [
+                    req.body.name,
+                    req.body.description,
+                    req.params.id
+                ];
+                await pool.query(queryText , params);
+                return res.status(200).json({
+                    status_code: 200 , 
+                    message: 'update stock success'
+                })
+            } else {
+                return res.status(203).json({
+                    status_code: 203 , 
+                    message : 'stock not fount'
+                })
+            }
+
+        } catch (error) {
+            return res.status(200).json({
+                status_code: 500,
+                message: error
+            })
+        }
     }
 }
 

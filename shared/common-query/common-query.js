@@ -1,4 +1,5 @@
 const { Pool } = require('pg');
+const ResponseObject = require('../model/response-object');
 const pool = new Pool({
     connectionString: process.env.connectpg
 })
@@ -15,10 +16,24 @@ const commonQuery = {
 
             return rows[0].email;
         } catch (error) {
-            return res.status(500).json({
-                status_code : 500,
-                message: error
-            })
+            return res.status(500).json(new ResponseObject(500 , error));
+        }
+    },
+
+    //this will check email from token with email from id stock
+    async checkPermissonEmail(req , res) {
+        try {
+            const emailUser = await this.getEmailFromToken(req , res);
+            const {rows} = await pool.query('select stock.email from stock where stock.id = $1' , [
+                req.params.id
+            ]);
+            if(emailUser === rows[0].email) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (error) {
+            return res.status(500).json(new ResponseObject(500 , error));
         }
     }
 }

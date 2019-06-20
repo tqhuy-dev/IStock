@@ -13,6 +13,16 @@ pool.on('connect', () => {
 })
 
 const stockQuery = {
+
+    async checkExistStock(req , res) {
+        const {rows} = await pool.query('select count(*) from stock where stock.id = $1' , [req.params.id]);
+        if(parseInt(rows[0].count) > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    },
+
     async createStock(req , res) {
         await authentication.checkToken(req , res);
         const queryText = 'select create_stock($1,$2,$3,$4,$5)';
@@ -84,12 +94,8 @@ const stockQuery = {
                 req.params.id
             ]);
             if(parseInt(dataCheckStock.rows[0].count) > 0) {
-                const emailUser = await commonQuery.getEmailFromToken(req , res);
-                const checkStockUser = await pool.query('select stock.email from stock where stock.id = $1' ,[
-                    req.params.id
-                ]);
-                
-                if(emailUser === checkStockUser.rows[0].email) {
+                const isPermissionEmail = await commonQuery.checkPermissonEmail(req , res);
+                if(isPermissionEmail) {
                     const queryText = 'UPDATE stock SET status=$2 WHERE stock.id = $1';
                     const params = [req.params.id, STOCK_STATUS.DELETE];
                     await pool.query(queryText , params);
@@ -107,7 +113,17 @@ const stockQuery = {
     },
 
     async changeStateStock(req , res) {
-        
+        await authentication.checkToken(req);
+        try {
+            const checkStock = await this.checkExistStock(req , res) ;
+            if(checkStock) {
+                return res.status(200).json(new ResponseObject(200 , 'change state success'));
+            } else {
+                return res.status(203).json(new ResponseObject(203 , 'stock not found'));
+            }
+        } catch (error) {
+            return res.status(500).json(new ResponseObject(500 , error));
+        }
     }
 }
 
